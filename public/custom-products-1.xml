@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+  <product>
+    <id>custom-1-01</id>
+    <name>Casque Audio Premium</name>
+    <description>Qualité sonore exceptionnelle avec réduction de bruit active.</description>
+    <price>250</price>
+    <image>https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80</image>
+    <url>/boutique.html#custom-1-01</url>
+  </product>
+  <product>
+    <id>custom-1-02</id>
+    <name>Enceinte Bluetooth Portable</name>
+    <description>Son puissant et 12h d'autonomie pour vos soirées.</description>
+    <price>60</price>
+    <image>https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=800&q=80</image>
+    <url>/boutique.html#custom-1-02</url>
+  </product>
+</products>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:wp="http://wordpress.org/export/1.2/">
+  <channel>
+    <title>Drinashop</title>
+    <item>
+      <title>Montre Élégance Noire</title>
+      <link>http://example.com/product/montre-elegance-noire</link>
+      <content:encoded><![CDATA[Une montre classique avec un bracelet en cuir noir et cadran minimaliste.]]></content:encoded>
+      <wp:post_type><![CDATA[product]]></wp:post_type>
+      <wp:postmeta>
+        <wp:meta_key><![CDATA[_price]]></wp:meta_key>
+        <wp:meta_value><![CDATA[120]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+        <wp:meta_key><![CDATA[_thumbnail_url]]></wp:meta_key>
+        <wp:meta_value><![CDATA[https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80]]></wp:meta_value>
+      </wp:postmeta>
+    </item>
+    <item>
+      <title>Sac à Dos Urbain</title>
+      <link>http://example.com/product/sac-a-dos-urbain</link>
+      <content:encoded><![CDATA[Parfait pour les déplacements quotidiens, résistant à l'eau.]]></content:encoded>
+      <wp:post_type><![CDATA[product]]></wp:post_type>
+      <wp:postmeta>
+        <wp:meta_key><![CDATA[_price]]></wp:meta_key>
+        <wp:meta_value><![CDATA[85]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+        <wp:meta_key><![CDATA[_thumbnail_url]]></wp:meta_key>
+        <wp:meta_value><![CDATA[https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80]]></wp:meta_value>
+      </wp:postmeta>
+    </item>
+  </channel>
+</rss>

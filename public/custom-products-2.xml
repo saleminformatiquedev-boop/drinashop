@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <item>
+    <sku>custom-2-01</sku>
+    <title>Lunettes de Soleil Vintage</title>
+    <details>Protection UV400 avec un style rétro incontournable.</details>
+    <cost>45</cost>
+    <pic>https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80</pic>
+    <link>/boutique.html#custom-2-01</link>
+  </item>
+  <item>
+    <sku>custom-2-02</sku>
+    <title>Gourde Isotherme 1L</title>
+    <details>Garde vos boissons chaudes 12h ou froides 24h.</details>
+    <cost>30</cost>
+    <pic>https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=800&q=80</pic>
+    <link>/boutique.html#custom-2-02</link>
+  </item>
+</catalog>
