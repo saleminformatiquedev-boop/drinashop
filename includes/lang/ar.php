@@ -1,0 +1,81 @@
+<?php
+return [
+    'home' => 'الرئيسية',
+    'shop' => 'المتجر',
+    'about' => 'من نحن',
+    'contact' => 'اتصل بنا',
+    'login' => 'تسجيل الدخول',
+    'register' => 'إنشاء حساب',
+    'profile' => 'ملفي الشخصي',
+    'logout' => 'تسجيل الخروج',
+    'admin' => 'لوحة الإدارة',
+    
+    'cart' => 'سلة التسوق',
+    'empty_cart' => 'سلة التسوق فارغة.',
+    'total' => 'المجموع',
+    'checkout' => 'الدفع عند الاستلام',
+    
+    'hero_title' => 'مرحباً بكم في درينا شوب',
+    'hero_desc' => 'اكتشف منتجاتنا الحرفية الفريدة.',
+    'hero_btn' => 'تصفح منتجاتنا',
+    'features_title' => 'لماذا تختارنا؟',
+    'feat_1_title' => 'جودة حرفية',
+    'feat_1_desc' => 'منتجات مصنوعة يدوياً بعناية.',
+    'feat_2_title' => 'الدفع عند الاستلام',
+    'feat_2_desc' => 'ادفع بأمان عند استلام طلبك.',
+    'feat_3_title' => 'دعم العملاء',
+    'feat_3_desc' => 'فريق في خدمتك على مدار الساعة.',
+    
+    'our_shop' => 'متجرنا',
+    'add_to_cart' => 'أضف إلى السلة',
+    
+    'footer_text' => 'جميع الحقوق محفوظة. الدفع عند الاستلام فقط.',
+    
+    'checkout_title' => 'تأكيد الطلب',
+    'address_label' => 'عنوان التوصيل الكامل',
+    'phone_label' => 'رقم الهاتف',
+    'confirm_order' => 'تأكيد الطلب',
+    'order_success' => 'تم تأكيد الطلب!',
+    'order_success_desc' => 'شكراً لتسوقك. سيتم الدفع عند التسليم.',
+    'back_to_shop' => 'العودة للمتجر',
+    
+    'my_info' => 'معلوماتي',
+    'name' => 'الاسم',
+    'email' => 'البريد الإلكتروني',
+    'member_since' => 'عضو منذ',
+    'order_history' => 'سجل الطلبات',
+    'no_orders' => "لم تقم بأي طلب حتى الآن.",
+    'order' => 'طلب',
+    
+    'email_address' => 'البريد الإلكتروني',
+    'password' => 'كلمة المرور',
+    'no_account' => 'ليس لديك حساب؟',
+    'has_account' => 'لديك حساب بالفعل؟',
+    
+    'item_added' => 'تمت إضافته إلى السلة!',
+    'featured_products_title' => 'منتجاتنا المميزة',
+    'products_description' => 'يتم استخراج جميع منتجاتنا من مصادر XML.',
+    
+    'terms_conditions' => 'الشروط والأحكام',
+    'qty' => 'الكمية',
+    'promo' => 'تخفيض',
+    
+    'Abat-jours' => 'أغطية المصابيح',
+    'Lampadaire' => 'مصابيح أرضية',
+    'Miroirs' => 'مرايا',
+    'Couffins' => 'قفف',
+    'Apliques murale' => 'مصابيح حائط',
+    'Lanternes' => 'فوانيس',
+    'Suspension Luminaire' => 'مصابيح معلقة',
+    'Art De Table' => 'أدوات المائدة',
+    'Décorations Murale' => 'ديكورات حائط',
+    'Chapeaux' => 'قبعات',
+    'all_categories' => 'الكل',
+    'search_placeholder' => 'البحث عن منتج...',
+    
+    'out_of_stock' => 'نفذت الكمية',
+    'in_stock' => 'متوفر في المخزون',
+    'available' => 'متاح',
+    'no_description' => 'لا يوجد وصف متاح.',
+    'quick_view' => 'نظرة سريعة'
+];

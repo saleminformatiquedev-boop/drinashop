@@ -1,0 +1,66 @@
+{
+    "version": "0.4",
+    "title": "Form",
+    "type": "page",
+    "metadata": {
+        "template_type": "single-page",
+        "include_in_zip": "1",
+        "elementor_pro_required": null,
+        "wp_page_template": "default"
+    },
+    "content": [
+        {
+            "id": "5cd6ce56",
+            "settings": {
+                "flex_direction": "column",
+                "margin": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "100",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "0",
+                    "left": "0",
+                    "isLinked": false
+                }
+            },
+            "elements": [
+                {
+                    "id": "69b6d403",
+                    "settings": {
+                        "mf_form_id": "322***1754634774981"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "metform",
+                    "elType": "widget"
+                },
+                {
+                    "id": "67a11de0",
+                    "settings": {
+                        "mf_form_id": "956***1754634790082"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "metform",
+                    "elType": "widget"
+                }
+            ],
+            "isInner": false,
+            "elType": "container"
+        }
+    ],
+    "page_settings": {
+        "hide_title": "yes",
+        "background_background": "classic",
+        "__globals__": {
+            "background_color": "globals\/colors?id=primary"
+        }
+    }
+}

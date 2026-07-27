@@ -1,0 +1,81 @@
+<?php
+return [
+    'home' => 'Home',
+    'shop' => 'Shop',
+    'about' => 'About Us',
+    'contact' => 'Contact',
+    'login' => 'Login',
+    'register' => 'Register',
+    'profile' => 'My Profile',
+    'logout' => 'Logout',
+    'admin' => 'Administration',
+    
+    'cart' => 'Your Cart',
+    'empty_cart' => 'Your cart is empty.',
+    'total' => 'Total',
+    'checkout' => 'Checkout (Cash on Delivery)',
+    
+    'hero_title' => 'Welcome to Drinashop',
+    'hero_desc' => 'Discover our unique handcrafted products.',
+    'hero_btn' => 'Discover our products',
+    'features_title' => 'Why choose us?',
+    'feat_1_title' => 'Handcrafted Quality',
+    'feat_1_desc' => 'Products carefully handmade.',
+    'feat_2_title' => 'Cash on Delivery',
+    'feat_2_desc' => 'Pay securely upon receipt.',
+    'feat_3_title' => 'Customer Support',
+    'feat_3_desc' => 'A team ready to help 24/7.',
+    
+    'our_shop' => 'Our Shop',
+    'add_to_cart' => 'Add to cart',
+    
+    'footer_text' => 'All rights reserved. Cash on delivery only.',
+    
+    'checkout_title' => 'Checkout',
+    'address_label' => 'Full Shipping Address',
+    'phone_label' => 'Phone Number',
+    'confirm_order' => 'Confirm Order',
+    'order_success' => 'Order Confirmed!',
+    'order_success_desc' => 'Thank you for your purchase. You will pay upon delivery.',
+    'back_to_shop' => 'Back to shop',
+    
+    'my_info' => 'My Information',
+    'name' => 'Name',
+    'email' => 'Email',
+    'member_since' => 'Member since',
+    'order_history' => 'Order History',
+    'no_orders' => "You haven't placed any orders yet.",
+    'order' => 'Order',
+    
+    'email_address' => 'Email address',
+    'password' => 'Password',
+    'no_account' => "Don't have an account?",
+    'has_account' => 'Already have an account?',
+    
+    'item_added' => 'added to cart!',
+    'featured_products_title' => 'Our Featured Products',
+    'products_description' => 'All our products are fetched from XML sources (PHP backend).',
+    
+    'terms_conditions' => 'Terms & Conditions',
+    'qty' => 'Quantity',
+    'promo' => 'Sale',
+    
+    'Abat-jours' => 'Lampshades',
+    'Lampadaire' => 'Floor Lamps',
+    'Miroirs' => 'Mirrors',
+    'Couffins' => 'Baskets',
+    'Apliques murale' => 'Wall Sconces',
+    'Lanternes' => 'Lanterns',
+    'Suspension Luminaire' => 'Pendant Lights',
+    'Art De Table' => 'Tableware',
+    'Décorations Murale' => 'Wall Decorations',
+    'Chapeaux' => 'Hats',
+    'all_categories' => 'All',
+    'search_placeholder' => 'Search products...',
+    
+    'out_of_stock' => 'Out of stock',
+    'in_stock' => 'In stock',
+    'available' => 'available',
+    'no_description' => 'No description available.',
+    'quick_view' => 'Quick view'
+];

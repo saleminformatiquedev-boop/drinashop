@@ -1,4 +1,4 @@
-export function initParallax() {
+function initParallax() {
   // Fallback for browsers that don't support scroll-driven animations
   if (!CSS.supports('(animation-timeline: view()) and (animation-range: entry)')) {
     const wrappers = document.querySelectorAll('.parallax-wrapper');

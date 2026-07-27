@@ -1,0 +1,81 @@
+<?php
+return [
+    'home' => 'Accueil',
+    'shop' => 'Boutique',
+    'about' => 'Qui sommes-nous',
+    'contact' => 'Contact',
+    'login' => 'Se connecter',
+    'register' => "S'inscrire",
+    'profile' => 'Mon Profil',
+    'logout' => 'Déconnexion',
+    'admin' => 'Administration',
+    
+    'cart' => 'Votre Panier',
+    'empty_cart' => 'Votre panier est vide.',
+    'total' => 'Total',
+    'checkout' => 'Commander (Paiement à la livraison)',
+    
+    'hero_title' => 'Drina Shop Kerkennah',
+    'hero_desc' => 'Produits artisanaux & locaux de l\'Archipel de Kerkennah. Authentique et Fait Main.',
+    'hero_btn' => 'Découvrir nos produits',
+    'features_title' => 'Pourquoi nous choisir ?',
+    'feat_1_title' => 'Qualité artisanale',
+    'feat_1_desc' => 'Des produits faits à la main avec soin.',
+    'feat_2_title' => 'Paiement à la livraison',
+    'feat_2_desc' => 'Payez en toute sécurité à la réception.',
+    'feat_3_title' => 'Support client',
+    'feat_3_desc' => 'Une équipe à votre écoute 7j/7.',
+    
+    'our_shop' => 'Notre Boutique',
+    'add_to_cart' => 'Ajouter au panier',
+    
+    'footer_text' => 'Tous droits réservés. Paiement à la livraison uniquement.',
+    
+    'checkout_title' => 'Validation de la commande',
+    'address_label' => 'Adresse de livraison complète',
+    'phone_label' => 'Numéro de téléphone',
+    'confirm_order' => 'Confirmer la commande',
+    'order_success' => 'Commande validée !',
+    'order_success_desc' => 'Merci pour votre achat. Vous paierez à la livraison.',
+    'back_to_shop' => 'Retour à la boutique',
+    
+    'my_info' => 'Mes informations',
+    'name' => 'Nom',
+    'email' => 'Email',
+    'member_since' => 'Membre depuis',
+    'order_history' => 'Historique de commandes',
+    'no_orders' => "Vous n'avez passé aucune commande pour le moment.",
+    'order' => 'Commande',
+    
+    'email_address' => 'Adresse email',
+    'password' => 'Mot de passe',
+    'no_account' => 'Pas encore de compte ?',
+    'has_account' => 'Déjà un compte ?',
+    
+    'item_added' => 'ajouté au panier !',
+    'featured_products_title' => 'Nos Produits Phares',
+    'products_description' => 'Tous nos produits sont extraits des sources XML (PHP backend).',
+    
+    'terms_conditions' => 'Conditions Générales de Vente',
+    'qty' => 'Quantité',
+    'promo' => 'Promo',
+    
+    'Abat-jours' => 'Abat-jours',
+    'Lampadaire' => 'Lampadaire',
+    'Miroirs' => 'Miroirs',
+    'Couffins' => 'Couffins',
+    'Apliques murale' => 'Appliques murales',
+    'Lanternes' => 'Lanternes',
+    'Suspension Luminaire' => 'Suspension Luminaire',
+    'Art De Table' => 'Art de Table',
+    'Décorations Murale' => 'Décorations Murales',
+    'Chapeaux' => 'Chapeaux',
+    'all_categories' => 'Tous',
+    'search_placeholder' => 'Rechercher un produit...',
+    
+    'out_of_stock' => 'En rupture de stock',
+    'in_stock' => 'En stock',
+    'available' => 'disponibles',
+    'no_description' => 'Aucune description disponible.',
+    'quick_view' => 'Aperçu rapide'
+];

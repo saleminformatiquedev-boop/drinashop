@@ -2,7 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 
-require_once 'includes/csv_parser.php';
+require_once 'includes/db.php';
 
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
@@ -12,18 +12,30 @@ $action = $_GET['action'] ?? '';
 
 if ($action === 'add') {
     $id = $_POST['id'] ?? '';
+    $qty = (int)($_POST['quantity'] ?? 1);
+    
     $product = get_product_by_id($id);
     
     if ($product) {
+        $final_price = !empty($product['promo_price']) ? floatval($product['promo_price']) : floatval($product['price']);
+        
+        $current_qty = isset($_SESSION['cart'][$id]) ? $_SESSION['cart'][$id]['quantity'] : 0;
+        $new_qty = $current_qty + $qty;
+        
+        if (isset($product['stock']) && $new_qty > $product['stock']) {
+            echo json_encode(['success' => false, 'error' => "Stock insuffisant. Seulement {$product['stock']} en stock."]);
+            exit;
+        }
+        
         if (isset($_SESSION['cart'][$id])) {
-            $_SESSION['cart'][$id]['quantity']++;
+            $_SESSION['cart'][$id]['quantity'] += $qty;
         } else {
             $_SESSION['cart'][$id] = [
                 'id' => $product['id'],
                 'title' => $product['title'],
-                'price' => $product['price'],
+                'price' => $final_price,
                 'image' => $product['image'],
-                'quantity' => 1
+                'quantity' => $qty
             ];
         }
         echo json_encode(['success' => true]);
@@ -47,7 +59,13 @@ if ($action === 'update') {
     $qty = (int)($_POST['quantity'] ?? 1);
     
     if (isset($_SESSION['cart'][$id])) {
+        $product = get_product_by_id($id);
+        
         if ($qty > 0) {
+            if ($product && isset($product['stock']) && $qty > $product['stock']) {
+                echo json_encode(['success' => false, 'error' => "Stock insuffisant. Seulement {$product['stock']} en stock."]);
+                exit;
+            }
             $_SESSION['cart'][$id]['quantity'] = $qty;
         } else {
             unset($_SESSION['cart'][$id]);
