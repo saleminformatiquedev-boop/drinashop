@@ -107,7 +107,7 @@ function openQuickView(productStr) {
         actionDiv.innerHTML = `<button class="btn-primary" style="opacity: 0.5; cursor: not-allowed; width: 100%;" disabled>${window.I18N.out_of_stock}</button>`;
     } else {
         stockDiv.innerHTML = `<span style="color: #22c55e;">✅ ${window.I18N.in_stock} (${stock} ${window.I18N.available})</span>`;
-        actionDiv.innerHTML = `<button class="btn-primary" onclick="addToCart('${p.id}'); closeQuickView();" style="width: 100%;">🛒 ${window.I18N.add_to_cart}</button>`;
+        actionDiv.innerHTML = `<button class="btn-primary" onclick="addToCart('${p.id}', this); closeQuickView();" style="width: 100%;">🛒 ${window.I18N.add_to_cart}</button>`;
     }
 }
 
