@@ -136,15 +136,39 @@ if ($is_logged_in) {
     $perPage = 10;
     $offset = ($page - 1) * $perPage;
 
-    $totalStmt = $db->query("SELECT COUNT(*) FROM products");
+    $search = trim($_GET['search'] ?? '');
+    $filter_category = trim($_GET['category'] ?? '');
+
+    $whereClauses = [];
+    $params = [];
+
+    if ($search !== '') {
+        $whereClauses[] = "(title LIKE :search OR id LIKE :search)";
+        $params[':search'] = '%' . $search . '%';
+    }
+    if ($filter_category !== '') {
+        $whereClauses[] = "category = :category";
+        $params[':category'] = $filter_category;
+    }
+
+    $whereSql = count($whereClauses) > 0 ? "WHERE " . implode(" AND ", $whereClauses) : "";
+
+    $totalStmt = $db->prepare("SELECT COUNT(*) FROM products $whereSql");
+    $totalStmt->execute($params);
     $totalProducts = $totalStmt->fetchColumn();
     $totalPages = ceil($totalProducts / $perPage);
 
-    $stmt = $db->prepare("SELECT * FROM products ORDER BY title ASC LIMIT :limit OFFSET :offset");
+    $stmt = $db->prepare("SELECT * FROM products $whereSql ORDER BY title ASC LIMIT :limit OFFSET :offset");
+    foreach($params as $key => $val) {
+        $stmt->bindValue($key, $val);
+    }
     $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $catStmt = $db->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != '' ORDER BY category ASC");
+    $categories = $catStmt->fetchAll(PDO::FETCH_COLUMN);
 }
 ?>
 <!DOCTYPE html>
@@ -205,9 +229,19 @@ if ($is_logged_in) {
             </div>
         <?php endif; ?>
 
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h2 class="text-2xl font-semibold">Liste des Produits (<?= $totalProducts ?>)</h2>
-            <button onclick="openModal('add')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
+            <form method="GET" class="flex gap-2">
+                <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Rechercher..." class="p-2 border rounded text-sm">
+                <select name="category" class="p-2 border rounded text-sm">
+                    <option value="">Toutes les catégories</option>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?= htmlspecialchars($cat) ?>" <?= $filter_category === $cat ? 'selected' : '' ?>><?= htmlspecialchars($cat) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm">Filtrer</button>
+            </form>
+            <button onclick="openModal('add')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow whitespace-nowrap">
                 + Ajouter un Produit
             </button>
         </div>
@@ -269,18 +303,19 @@ if ($is_logged_in) {
         
         <?php if ($totalPages > 1): ?>
         <div class="flex justify-center mt-6 gap-2">
+            <?php $qs = (!empty($search) ? '&search=' . urlencode($search) : '') . (!empty($filter_category) ? '&category=' . urlencode($filter_category) : ''); ?>
             <?php if ($page > 1): ?>
-                <a href="?page=<?= $page - 1 ?>" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</a>
+                <a href="?page=<?= $page - 1 ?><?= $qs ?>" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</a>
             <?php endif; ?>
             
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?= $i ?>" class="px-3 py-1 <?= $i === $page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100' ?> rounded">
+                <a href="?page=<?= $i ?><?= $qs ?>" class="px-3 py-1 <?= $i === $page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100' ?> rounded">
                     <?= $i ?>
                 </a>
             <?php endfor; ?>
             
             <?php if ($page < $totalPages): ?>
-                <a href="?page=<?= $page + 1 ?>" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</a>
+                <a href="?page=<?= $page + 1 ?><?= $qs ?>" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</a>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -372,11 +407,6 @@ if ($is_logged_in) {
                     <div class="col-span-2 sm:col-span-1">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Catégorie</label>
                         <input type="text" name="category" id="field_category" class="w-full p-2 border rounded focus:border-blue-500 outline-none">
-                    </div>
-
-                    <div class="col-span-2">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">URL de l'image (Ex: /public/imagesProduits/produits/image.jpg)</label>
-                        <input type="text" name="image" id="field_image" required class="w-full p-2 border rounded focus:border-blue-500 outline-none">
                     </div>
                 </div>
 
