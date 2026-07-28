@@ -205,7 +205,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php endif; ?>
                     </td>
                     <td style="padding: 1rem; display: flex; gap: 0.5rem; align-items: center; height: 50px;">
-                        <button onclick="editProduct(<?= htmlspecialchars(json_encode($p)) ?>)" style="background: #3b82f6; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">Éditer</button>
+                        <button type="button" onclick="editProduct('<?= htmlspecialchars(rawurlencode(json_encode($p))) ?>')" style="background: #3b82f6; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer;">Éditer</button>
                         <form method="POST" style="display:inline;" onsubmit="return confirm('Supprimer ce produit ?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?= htmlspecialchars($p['id']) ?>">
@@ -324,7 +324,13 @@ function clearModal() {
     document.getElementById('main-image-preview').style.display = "none";
 }
 
-function editProduct(product) {
+function editProduct(productStr) {
+    let product;
+    if (typeof productStr === 'string') {
+        product = JSON.parse(decodeURIComponent(productStr));
+    } else {
+        product = productStr;
+    }
     document.getElementById('modal-title').innerText = "Éditer un produit";
     document.getElementById('modal-action').value = "edit";
     document.getElementById('modal-id').value = product.id;
