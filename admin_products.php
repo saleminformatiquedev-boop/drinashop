@@ -322,7 +322,7 @@ if ($is_logged_in) {
     </div>
 
     <!-- Modal Form -->
-    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50" onclick="if(event.target === this) closeModal()">
         <div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl p-6 mx-4 max-h-[90vh] overflow-y-auto relative">
             <button type="button" onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             <h2 id="modalTitle" class="text-2xl font-bold mb-6 text-gray-800">Ajouter un Produit</h2>
