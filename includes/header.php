@@ -145,17 +145,25 @@ $canonical_url = $protocol . $_SERVER['HTTP_HOST'] . $canonical_path;
               <?php endforeach; ?>
           </div>
 
+          <?php if ($index === 0 || !empty($slide['title']) || !empty($slide['subtitle']) || !empty($slide['link_url'])): ?>
           <div class="parallax-content <?= $index === 0 ? 'label-content' : '' ?>">
               <?php if ($index === 0): ?>
                   <img src="<?= BASE_URL ?>/public/imagesProduits/slider/label.jpg" alt="Drina Shop Kerkennah" style="max-width: 450px; max-height: 60vh; width: 100%; height: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
               <?php else: ?>
-                  <h2><?= htmlspecialchars($slide['title']) ?></h2>
-                  <p><?= htmlspecialchars($slide['subtitle']) ?></p>
-                  <?php if (!empty($slide['link_url'])): ?>
+                  <?php if (!empty($slide['title'])): ?>
+                      <h2><?= htmlspecialchars($slide['title']) ?></h2>
+                  <?php endif; ?>
+                  
+                  <?php if (!empty($slide['subtitle'])): ?>
+                      <p><?= htmlspecialchars($slide['subtitle']) ?></p>
+                  <?php endif; ?>
+                  
+                  <?php if (!empty($slide['link_url']) && !empty($slide['link_text'])): ?>
                       <a href="<?= htmlspecialchars($slide['link_url']) ?>" class="btn-primary" style="display: inline-block; padding: 1rem 2rem; text-decoration: none; border-radius: 8px;"><?= htmlspecialchars($slide['link_text']) ?></a>
                   <?php endif; ?>
               <?php endif; ?>
           </div>
+          <?php endif; ?>
       </div>
       <?php endforeach; ?>
       <?php if (count($slides) > 1): ?>
