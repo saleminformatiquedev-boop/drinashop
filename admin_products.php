@@ -66,9 +66,20 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['log
     }
 }
 
-// Fetch all products
+// Fetch all products with pagination
 if ($is_logged_in) {
-    $stmt = $db->query("SELECT * FROM products ORDER BY title ASC");
+    $page = max(1, intval($_GET['page'] ?? 1));
+    $perPage = 10;
+    $offset = ($page - 1) * $perPage;
+
+    $totalStmt = $db->query("SELECT COUNT(*) FROM products");
+    $totalProducts = $totalStmt->fetchColumn();
+    $totalPages = ceil($totalProducts / $perPage);
+
+    $stmt = $db->prepare("SELECT * FROM products ORDER BY title ASC LIMIT :limit OFFSET :offset");
+    $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
@@ -79,8 +90,11 @@ if ($is_logged_in) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration Drinashop</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .ql-container { font-family: 'Inter', sans-serif; font-size: 1rem; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -128,7 +142,7 @@ if ($is_logged_in) {
         <?php endif; ?>
 
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-semibold">Liste des Produits (<?= count($products) ?>)</h2>
+            <h2 class="text-2xl font-semibold">Liste des Produits (<?= $totalProducts ?>)</h2>
             <button onclick="openModal('add')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
                 + Ajouter un Produit
             </button>
@@ -188,6 +202,24 @@ if ($is_logged_in) {
                 </tbody>
             </table>
         </div>
+        
+        <?php if ($totalPages > 1): ?>
+        <div class="flex justify-center mt-6 gap-2">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?= $page - 1 ?>" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</a>
+            <?php endif; ?>
+            
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>" class="px-3 py-1 <?= $i === $page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100' ?> rounded">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+            
+            <?php if ($page < $totalPages): ?>
+                <a href="?page=<?= $page + 1 ?>" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</a>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- Modal Form -->
@@ -212,7 +244,8 @@ if ($is_logged_in) {
                     
                     <div class="col-span-2">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description</label>
-                        <textarea name="description" id="field_description" rows="3" class="w-full p-2 border rounded focus:border-blue-500 outline-none"></textarea>
+                        <div id="editor-description" class="h-32 bg-white"></div>
+                        <input type="hidden" name="description" id="field_description">
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -225,11 +258,13 @@ if ($is_logged_in) {
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description (EN)</label>
-                        <textarea name="description_en" id="field_description_en" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none"></textarea>
+                        <div id="editor-description_en" class="h-24 bg-white"></div>
+                        <input type="hidden" name="description_en" id="field_description_en">
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description (AR)</label>
-                        <textarea name="description_ar" id="field_description_ar" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none" dir="rtl"></textarea>
+                        <div id="editor-description_ar" class="h-24 bg-white" dir="rtl"></div>
+                        <input type="hidden" name="description_ar" id="field_description_ar">
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -264,14 +299,47 @@ if ($is_logged_in) {
         </div>
     </div>
 
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script>
-        function openModal(mode) {
+        // Init Quill Editors
+        const quillConfig = {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            }
+        };
+        const quillDesc = new Quill('#editor-description', quillConfig);
+        const quillDescEn = new Quill('#editor-description_en', quillConfig);
+        const quillDescAr = new Quill('#editor-description_ar', {
+            theme: 'snow',
+            modules: { toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], ['clean']] }
+        });
+        quillDescAr.format('direction', 'rtl');
+        quillDescAr.format('align', 'right');
+
+        // Form Submit
+        document.getElementById('productForm').onsubmit = function() {
+            document.getElementById('field_description').value = quillDesc.root.innerHTML;
+            document.getElementById('field_description_en').value = quillDescEn.root.innerHTML;
+            document.getElementById('field_description_ar').value = quillDescAr.root.innerHTML;
+            return true;
+        };
+
+        function openModal(action) {
             document.getElementById('productModal').classList.remove('hidden');
-            document.getElementById('formAction').value = mode;
-            if (mode === 'add') {
+            document.getElementById('formAction').value = action;
+            if (action === 'add') {
                 document.getElementById('modalTitle').innerText = 'Ajouter un Produit';
                 document.getElementById('productForm').reset();
-                document.getElementById('original_id').value = '';
+                document.getElementById('field_id').readOnly = false;
+                quillDesc.root.innerHTML = '';
+                quillDescEn.root.innerHTML = '';
+                quillDescAr.root.innerHTML = '';
             }
         }
 
@@ -283,19 +351,22 @@ if ($is_logged_in) {
             openModal('edit');
             document.getElementById('modalTitle').innerText = 'Modifier le Produit';
             document.getElementById('original_id').value = product.id;
+            document.getElementById('field_id').readOnly = true;
             
             document.getElementById('field_id').value = product.id;
             document.getElementById('field_title').value = product.title || '';
-            document.getElementById('field_description').value = product.description || '';
             document.getElementById('field_title_en').value = product.title_en || '';
             document.getElementById('field_title_ar').value = product.title_ar || '';
-            document.getElementById('field_description_en').value = product.description_en || '';
-            document.getElementById('field_description_ar').value = product.description_ar || '';
-            document.getElementById('field_price').value = product.price || '';
+            quillDescEn.root.innerHTML = product.description_en || '';
+            quillDescAr.root.innerHTML = product.description_ar || '';
+            
+            document.getElementById('field_price').value = product.price;
             document.getElementById('field_promo_price').value = product.promo_price || '';
-            document.getElementById('field_stock').value = product.stock;
+            document.getElementById('field_stock').value = product.stock || 0;
             document.getElementById('field_category').value = product.category || '';
             document.getElementById('field_image').value = product.image || '';
+            
+            quillDesc.root.innerHTML = product.description || '';
         }
     </script>
 <?php endif; ?>
