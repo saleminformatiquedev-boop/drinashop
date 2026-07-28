@@ -166,7 +166,7 @@ if ($is_logged_in) {
                     <tr class="hover:bg-gray-50">
                         <td class="px-5 py-4 border-b border-gray-200 text-sm">
                             <div class="w-12 h-12">
-                                <img src="<?= htmlspecialchars($p['image']) ?>" alt="" class="w-full h-full rounded object-cover shadow border">
+                                <img src="<?= BASE_URL . htmlspecialchars($p['image']) ?>" alt="" class="w-full h-full rounded object-cover shadow border">
                             </div>
                         </td>
                         <td class="px-5 py-4 border-b border-gray-200 text-sm">
@@ -246,6 +246,16 @@ if ($is_logged_in) {
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description</label>
                         <div id="editor-description" class="h-32 bg-white"></div>
                         <input type="hidden" name="description" id="field_description">
+                    </div>
+
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Image Principale (URL ou chemin)</label>
+                        <input type="text" name="image" id="field_image" class="w-full p-2 border rounded focus:border-blue-500 outline-none" oninput="document.getElementById('modal_image_preview').src = (this.value.startsWith('/') ? '<?= BASE_URL ?>' : '') + this.value; document.getElementById('modal_image_preview').style.display = this.value ? 'block' : 'none';">
+                        <img id="modal_image_preview" src="" alt="Aperçu" class="mt-2 w-24 h-24 object-cover rounded shadow" style="display: none;">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Images Supplémentaires (JSON)</label>
+                        <textarea name="extra_images" id="field_extra_images" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs"></textarea>
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -371,6 +381,14 @@ if ($is_logged_in) {
             document.getElementById('field_stock').value = product.stock || 0;
             document.getElementById('field_category').value = product.category || '';
             document.getElementById('field_image').value = product.image || '';
+            document.getElementById('field_extra_images').value = product.extra_images || '[]';
+            
+            if (product.image) {
+                document.getElementById('modal_image_preview').src = (product.image.startsWith('/') ? '<?= BASE_URL ?>' : '') + product.image;
+                document.getElementById('modal_image_preview').style.display = 'block';
+            } else {
+                document.getElementById('modal_image_preview').style.display = 'none';
+            }
             
             quillDesc.root.innerHTML = product.description || '';
         }
