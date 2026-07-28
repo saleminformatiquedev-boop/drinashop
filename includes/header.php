@@ -117,7 +117,7 @@ $canonical_url = $protocol . $_SERVER['HTTP_HOST'] . $canonical_path;
   <div class="parallax-slider" id="header-parallax-slider">
       <!-- Floating decorations moved inside slide -->
       <?php foreach ($slides as $index => $slide): ?>
-      <div class="parallax-slide <?= $index === 0 ? 'active' : '' ?>" style="background-image: url('<?= htmlspecialchars($slide['image_url']) ?>');">
+      <div class="parallax-slide <?= $index === 0 ? 'active' : '' ?>" style="background-image: url('<?= BASE_URL ?><?= htmlspecialchars($slide['image_url']) ?>');">
           
           <div class="floating-decorations slide-floating" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
               <?php
