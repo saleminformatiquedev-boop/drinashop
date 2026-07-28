@@ -318,16 +318,14 @@ if ($is_logged_in) {
 
                     <div class="col-span-2 sm:col-span-1">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Image Principale</label>
-                        <input type="text" name="image" id="field_image" class="w-full p-2 border rounded focus:border-blue-500 outline-none text-xs mb-2" placeholder="URL ou chemin..." oninput="document.getElementById('modal_image_preview').src = (this.value.startsWith('/') ? '<?= BASE_URL ?>' : '') + this.value; document.getElementById('modal_image_preview').style.display = this.value ? 'block' : 'none';">
-                        <div class="text-xs text-gray-500 mb-1">Ou télécharger depuis votre appareil :</div>
+                        <input type="text" name="image" id="field_image" class="hidden w-full p-2 border rounded focus:border-blue-500 outline-none text-xs mb-2" placeholder="URL ou chemin..." oninput="document.getElementById('modal_image_preview').src = (this.value.startsWith('/') ? '<?= BASE_URL ?>' : '') + this.value; document.getElementById('modal_image_preview').style.display = this.value ? 'block' : 'none';">
+                        <img id="modal_image_preview" src="" alt="Aperçu" class="mb-3 w-32 h-32 object-cover rounded shadow" style="display: none;">
                         <input type="file" name="image_file" accept="image/*" class="w-full text-xs border rounded p-1">
-                        <img id="modal_image_preview" src="" alt="Aperçu" class="mt-2 w-24 h-24 object-cover rounded shadow" style="display: none;">
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Images Supplémentaires</label>
-                        <textarea name="extra_images" id="field_extra_images" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs mb-2" placeholder='["/public/...", ...]' oninput="updateExtraImagesPreview(this.value)"></textarea>
-                        <div id="extra_images_preview" class="flex gap-2 flex-wrap mb-2"></div>
-                        <div class="text-xs text-gray-500 mb-1">Télécharger plus d'images :</div>
+                        <textarea name="extra_images" id="field_extra_images" rows="2" class="hidden w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs mb-2" placeholder='["/public/...", ...]' oninput="updateExtraImagesPreview(this.value)"></textarea>
+                        <div id="extra_images_preview" class="flex gap-2 flex-wrap mb-3"></div>
                         <input type="file" name="extra_images_files[]" multiple accept="image/*" class="w-full text-xs border rounded p-1">
                     </div>
 
