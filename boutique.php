@@ -68,13 +68,27 @@ include 'includes/header.php';
     
     <?php if (!empty($categories_data)): ?>
     <div class="category-menu" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 3rem; flex-wrap: wrap;">
-        <a href="?search=<?= urlencode($search) ?>" class="btn-category <?= empty($selectedCategory) ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= empty($selectedCategory) ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= empty($selectedCategory) ? 'var(--primary-color)' : 'transparent' ?>; color: <?= empty($selectedCategory) ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__('all_categories')) ?> (<?= $totalAllProducts ?>)</a>
+        <?php 
+            $all_link = BASE_URL . '/boutique';
+            if (!empty($search)) {
+                $all_link .= '?search=' . urlencode($search);
+            }
+        ?>
+        <a href="<?= $all_link ?>" class="btn-category <?= empty($selectedCategory) ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= empty($selectedCategory) ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= empty($selectedCategory) ? 'var(--primary-color)' : 'transparent' ?>; color: <?= empty($selectedCategory) ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__('all_categories')) ?> (<?= $totalAllProducts ?>)</a>
         <?php foreach ($categories_data as $catData): 
             $cat = $catData['category'];
             $count = $catData['count'];
             $isActive = ($selectedCategory === $cat);
         ?>
-            <a href="?search=<?= urlencode($search) ?>&category=<?= urlencode($cat) ?>" class="btn-category <?= $isActive ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= $isActive ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= $isActive ? 'var(--primary-color)' : 'transparent' ?>; color: <?= $isActive ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__($cat)) ?> (<?= $count ?>)</a>
+            <?php 
+                $link = BASE_URL . '/boutique';
+                if (!empty($search)) {
+                    $link .= '?search=' . urlencode($search) . '&category=' . urlencode($cat);
+                } else {
+                    $link .= '?category=' . urlencode($cat);
+                }
+            ?>
+            <a href="<?= $link ?>" class="btn-category <?= $isActive ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= $isActive ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= $isActive ? 'var(--primary-color)' : 'transparent' ?>; color: <?= $isActive ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__($cat)) ?> (<?= $count ?>)</a>
         <?php endforeach; ?>
     </div>
     <?php endif; ?>
@@ -147,18 +161,23 @@ include 'includes/header.php';
     <!-- Pagination -->
     <?php if ($totalPages > 1): ?>
     <div class="pagination" style="margin-top: 3rem; display: flex; justify-content: center; gap: 0.5rem;">
+        <?php 
+            $qs = '';
+            if (!empty($search)) $qs .= '&search=' . urlencode($search);
+            if (!empty($selectedCategory)) $qs .= '&category=' . urlencode($selectedCategory);
+        ?>
         <?php if ($page > 1): ?>
-            <a href="?page=<?= $page - 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" class="page-item">&laquo;</a>
+            <a href="<?= BASE_URL ?>/boutique?page=<?= $page - 1 ?><?= $qs ?>" class="page-item">&laquo;</a>
         <?php endif; ?>
         
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <a href="?page=<?= $i ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" class="page-item <?= $i === $page ? 'active' : '' ?>">
+            <a href="<?= BASE_URL ?>/boutique?page=<?= $i ?><?= $qs ?>" class="page-item <?= $i === $page ? 'active' : '' ?>">
                 <?= $i ?>
             </a>
         <?php endfor; ?>
         
         <?php if ($page < $totalPages): ?>
-            <a href="?page=<?= $page + 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" class="page-item">&raquo;</a>
+            <a href="<?= BASE_URL ?>/boutique?page=<?= $page + 1 ?><?= $qs ?>" class="page-item">&raquo;</a>
         <?php endif; ?>
     </div>
     <?php endif; ?>
