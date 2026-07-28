@@ -5,6 +5,11 @@ $db_file = __DIR__ . '/database.sqlite';
 $db = new PDO('sqlite:' . $db_file);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+$is_local = (in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1']) || php_sapi_name() === 'cli-server' || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false);
+if (!defined('BASE_URL')) {
+    define('BASE_URL', $is_local ? '' : '/drinashop');
+}
+
 $ADMIN_PASSWORD = 'drinashop_admin';
 
 // Handle login
