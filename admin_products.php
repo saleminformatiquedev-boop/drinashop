@@ -50,14 +50,73 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['log
             $description_en = $_POST['description_en'] ?? '';
             $description_ar = $_POST['description_ar'] ?? '';
             
+            // Handle file upload
+            if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . '/public/imagesProduits/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                $filename = uniqid('prod_') . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', basename($_FILES['image_file']['name']));
+                $targetFile = $uploadDir . $filename;
+                
+                if (move_uploaded_file($_FILES['image_file']['tmp_name'], $targetFile)) {
+                    $image = '/public/imagesProduits/' . $filename;
+                }
+            } elseif ($action === 'edit' && empty($image)) {
+                $original_id = $_POST['original_id'];
+                $stmtImg = $db->prepare("SELECT image FROM products WHERE id = ?");
+                $stmtImg->execute([$original_id]);
+                $oldImage = $stmtImg->fetchColumn();
+                if ($oldImage) {
+                    $image = $oldImage;
+                }
+            }
+
+            // --- EXTRA IMAGES LOGIC ---
+            $extra_images = [];
+            if ($action === 'edit') {
+                $original_id = $_POST['original_id'];
+                $stmtImg = $db->prepare("SELECT extra_images FROM products WHERE id = ?");
+                $stmtImg->execute([$original_id]);
+                $oldExtras = $stmtImg->fetchColumn();
+                if ($oldExtras) {
+                    $extra_images = json_decode($oldExtras, true) ?: [];
+                }
+            }
+            
+            if (isset($_POST['extra_images']) && is_string($_POST['extra_images'])) {
+                $parsed = json_decode($_POST['extra_images'], true);
+                if (is_array($parsed)) {
+                    $extra_images = $parsed; // User manual JSON edit priority
+                }
+            }
+            
+            if (isset($_FILES['extra_images_files']) && !empty($_FILES['extra_images_files']['name'][0])) {
+                $uploadDir = __DIR__ . '/public/imagesProduits/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                foreach ($_FILES['extra_images_files']['name'] as $key => $name) {
+                    if ($_FILES['extra_images_files']['error'][$key] === UPLOAD_ERR_OK) {
+                        $filename = uniqid('prod_extra_') . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', basename($name));
+                        $targetFile = $uploadDir . $filename;
+                        if (move_uploaded_file($_FILES['extra_images_files']['tmp_name'][$key], $targetFile)) {
+                            $extra_images[] = '/public/imagesProduits/' . $filename;
+                        }
+                    }
+                }
+            }
+            $extra_images_json = json_encode($extra_images);
+            
             if ($action === 'add') {
-                $stmt = $db->prepare("INSERT INTO products (id, title, description, price, promo_price, stock, category, image, title_en, title_ar, description_en, description_ar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$id, $title, $description, $price, $promo_price, $stock, $category, $image, $title_en, $title_ar, $description_en, $description_ar]);
+                $stmt = $db->prepare("INSERT INTO products (id, title, description, price, promo_price, stock, category, image, title_en, title_ar, description_en, description_ar, extra_images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$id, $title, $description, $price, $promo_price, $stock, $category, $image, $title_en, $title_ar, $description_en, $description_ar, $extra_images_json]);
                 $msg = "Produit ajouté avec succès.";
             } else {
                 $original_id = $_POST['original_id'];
-                $stmt = $db->prepare("UPDATE products SET id=?, title=?, description=?, price=?, promo_price=?, stock=?, category=?, image=?, title_en=?, title_ar=?, description_en=?, description_ar=? WHERE id=?");
-                $stmt->execute([$id, $title, $description, $price, $promo_price, $stock, $category, $image, $title_en, $title_ar, $description_en, $description_ar, $original_id]);
+                $stmt = $db->prepare("UPDATE products SET id=?, title=?, description=?, price=?, promo_price=?, stock=?, category=?, image=?, title_en=?, title_ar=?, description_en=?, description_ar=?, extra_images=? WHERE id=?");
+                $stmt->execute([$id, $title, $description, $price, $promo_price, $stock, $category, $image, $title_en, $title_ar, $description_en, $description_ar, $extra_images_json, $original_id]);
+
                 $msg = "Produit mis à jour avec succès.";
             }
         } elseif ($action === 'delete') {
@@ -233,7 +292,7 @@ if ($is_logged_in) {
             <button type="button" onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             <h2 id="modalTitle" class="text-2xl font-bold mb-6 text-gray-800">Ajouter un Produit</h2>
             
-            <form method="POST" id="productForm">
+            <form method="POST" id="productForm" enctype="multipart/form-data">
                 <input type="hidden" name="action" id="formAction" value="add">
                 <input type="hidden" name="original_id" id="original_id" value="">
                 
@@ -247,20 +306,28 @@ if ($is_logged_in) {
                         <input type="text" name="title" id="field_title" required class="w-full p-2 border rounded focus:border-blue-500 outline-none">
                     </div>
                     
-                    <div class="col-span-2">
+                    <div class="col-span-2 relative">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description</label>
-                        <div id="editor-description" class="h-32 bg-white"></div>
+                        <button type="button" onclick="toggleFullScreen('editor-description-wrapper')" class="absolute top-0 right-0 text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded">Plein écran</button>
+                        <div id="editor-description-wrapper" class="bg-white">
+                            <button type="button" onclick="toggleFullScreen('editor-description-wrapper')" class="hidden fs-close absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded z-[10001]">Fermer le plein écran</button>
+                            <div id="editor-description" class="h-32"></div>
+                        </div>
                         <input type="hidden" name="description" id="field_description">
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Image Principale (URL ou chemin)</label>
-                        <input type="text" name="image" id="field_image" class="w-full p-2 border rounded focus:border-blue-500 outline-none" oninput="document.getElementById('modal_image_preview').src = (this.value.startsWith('/') ? '<?= BASE_URL ?>' : '') + this.value; document.getElementById('modal_image_preview').style.display = this.value ? 'block' : 'none';">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Image Principale</label>
+                        <input type="text" name="image" id="field_image" class="w-full p-2 border rounded focus:border-blue-500 outline-none text-xs mb-2" placeholder="URL ou chemin..." oninput="document.getElementById('modal_image_preview').src = (this.value.startsWith('/') ? '<?= BASE_URL ?>' : '') + this.value; document.getElementById('modal_image_preview').style.display = this.value ? 'block' : 'none';">
+                        <div class="text-xs text-gray-500 mb-1">Ou télécharger depuis votre appareil :</div>
+                        <input type="file" name="image_file" accept="image/*" class="w-full text-xs border rounded p-1">
                         <img id="modal_image_preview" src="" alt="Aperçu" class="mt-2 w-24 h-24 object-cover rounded shadow" style="display: none;">
                     </div>
                     <div class="col-span-2 sm:col-span-1">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Images Supplémentaires (JSON)</label>
-                        <textarea name="extra_images" id="field_extra_images" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs"></textarea>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Images Supplémentaires</label>
+                        <textarea name="extra_images" id="field_extra_images" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs mb-2" placeholder='["/public/...", ...]'></textarea>
+                        <div class="text-xs text-gray-500 mb-1">Télécharger plus d'images :</div>
+                        <input type="file" name="extra_images_files[]" multiple accept="image/*" class="w-full text-xs border rounded p-1">
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -271,14 +338,22 @@ if ($is_logged_in) {
                         <label class="block text-sm font-bold text-gray-700 mb-2">Titre (AR)</label>
                         <input type="text" name="title_ar" id="field_title_ar" class="w-full p-2 border rounded focus:border-blue-500 outline-none" dir="rtl">
                     </div>
-                    <div class="col-span-2 sm:col-span-1">
+                    <div class="col-span-2 sm:col-span-1 relative">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description (EN)</label>
-                        <div id="editor-description_en" class="h-24 bg-white"></div>
+                        <button type="button" onclick="toggleFullScreen('editor-description_en-wrapper')" class="absolute top-0 right-0 text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded">Plein écran</button>
+                        <div id="editor-description_en-wrapper" class="bg-white">
+                            <button type="button" onclick="toggleFullScreen('editor-description_en-wrapper')" class="hidden fs-close absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded z-[10001]">Fermer le plein écran</button>
+                            <div id="editor-description_en" class="h-24"></div>
+                        </div>
                         <input type="hidden" name="description_en" id="field_description_en">
                     </div>
-                    <div class="col-span-2 sm:col-span-1">
+                    <div class="col-span-2 sm:col-span-1 relative">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Description (AR)</label>
-                        <div id="editor-description_ar" class="h-24 bg-white" dir="rtl"></div>
+                        <button type="button" onclick="toggleFullScreen('editor-description_ar-wrapper')" class="absolute top-0 left-0 text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded">Plein écran</button>
+                        <div id="editor-description_ar-wrapper" class="bg-white" dir="rtl">
+                            <button type="button" onclick="toggleFullScreen('editor-description_ar-wrapper')" class="hidden fs-close absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded z-[10001]">Fermer le plein écran</button>
+                            <div id="editor-description_ar" class="h-24"></div>
+                        </div>
                         <input type="hidden" name="description_ar" id="field_description_ar">
                     </div>
 
@@ -316,7 +391,25 @@ if ($is_logged_in) {
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        .fs-mode {
+            position: fixed !important;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 10000;
+            background: white;
+            padding: 4rem 1rem 1rem 1rem;
+        }
+        .fs-mode .ql-container {
+            height: calc(100vh - 120px) !important;
+        }
+        .fs-mode .fs-close {
+            display: block !important;
+        }
+    </style>
     <script>
+        function toggleFullScreen(wrapperId) {
+            document.getElementById(wrapperId).classList.toggle('fs-mode');
+        }
         // Init Quill Editors
         const quillConfig = {
             theme: 'snow',
