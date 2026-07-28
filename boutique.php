@@ -48,10 +48,12 @@ include 'includes/header.php';
     
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Generate ALL categories from all products for the menu
-    $allStmt = $db->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != ''");
-    $categories = $allStmt->fetchAll(PDO::FETCH_COLUMN);
-    sort($categories);
+    // Generate ALL categories from all products for the menu with counts
+    $allStmt = $db->query("SELECT category, COUNT(*) as count FROM products WHERE category IS NOT NULL AND category != '' GROUP BY category ORDER BY category ASC");
+    $categories_data = $allStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $totalAllStmt = $db->query("SELECT COUNT(*) FROM products WHERE category IS NOT NULL AND category != ''");
+    $totalAllProducts = $totalAllStmt->fetchColumn();
     ?>
     
     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
@@ -64,13 +66,15 @@ include 'includes/header.php';
         <?php endif; ?>
     </div>
     
-    <?php if (!empty($categories)): ?>
+    <?php if (!empty($categories_data)): ?>
     <div class="category-menu" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 3rem; flex-wrap: wrap;">
-        <a href="?search=<?= urlencode($search) ?>" class="btn-category <?= empty($selectedCategory) ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= empty($selectedCategory) ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= empty($selectedCategory) ? 'var(--primary-color)' : 'transparent' ?>; color: <?= empty($selectedCategory) ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__('all_categories')) ?></a>
-        <?php foreach ($categories as $cat): 
+        <a href="?search=<?= urlencode($search) ?>" class="btn-category <?= empty($selectedCategory) ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= empty($selectedCategory) ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= empty($selectedCategory) ? 'var(--primary-color)' : 'transparent' ?>; color: <?= empty($selectedCategory) ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__('all_categories')) ?> (<?= $totalAllProducts ?>)</a>
+        <?php foreach ($categories_data as $catData): 
+            $cat = $catData['category'];
+            $count = $catData['count'];
             $isActive = ($selectedCategory === $cat);
         ?>
-            <a href="?search=<?= urlencode($search) ?>&category=<?= urlencode($cat) ?>" class="btn-category <?= $isActive ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= $isActive ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= $isActive ? 'var(--primary-color)' : 'transparent' ?>; color: <?= $isActive ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__($cat)) ?></a>
+            <a href="?search=<?= urlencode($search) ?>&category=<?= urlencode($cat) ?>" class="btn-category <?= $isActive ? 'active' : '' ?>" style="padding: 0.5rem 1.5rem; border: <?= $isActive ? 'none' : '1px solid var(--border-color)' ?>; border-radius: 20px; background: <?= $isActive ? 'var(--primary-color)' : 'transparent' ?>; color: <?= $isActive ? 'white' : 'var(--text-color)' ?>; text-decoration: none; font-weight: bold; transition: all 0.3s;"><?= htmlspecialchars(__($cat)) ?> (<?= $count ?>)</a>
         <?php endforeach; ?>
     </div>
     <?php endif; ?>
