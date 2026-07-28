@@ -325,7 +325,8 @@ if ($is_logged_in) {
                     </div>
                     <div class="col-span-2 sm:col-span-1">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Images Supplémentaires</label>
-                        <textarea name="extra_images" id="field_extra_images" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs mb-2" placeholder='["/public/...", ...]'></textarea>
+                        <textarea name="extra_images" id="field_extra_images" rows="2" class="w-full p-2 border rounded focus:border-blue-500 outline-none font-mono text-xs mb-2" placeholder='["/public/...", ...]' oninput="updateExtraImagesPreview(this.value)"></textarea>
+                        <div id="extra_images_preview" class="flex gap-2 flex-wrap mb-2"></div>
                         <div class="text-xs text-gray-500 mb-1">Télécharger plus d'images :</div>
                         <input type="file" name="extra_images_files[]" multiple accept="image/*" class="w-full text-xs border rounded p-1">
                     </div>
@@ -407,6 +408,25 @@ if ($is_logged_in) {
         }
     </style>
     <script>
+        function updateExtraImagesPreview(jsonStr) {
+            const container = document.getElementById('extra_images_preview');
+            container.innerHTML = '';
+            try {
+                const images = JSON.parse(jsonStr);
+                if (Array.isArray(images)) {
+                    images.forEach(img => {
+                        const imgUrl = (img.startsWith('/') ? '<?= BASE_URL ?>' : '') + img;
+                        const el = document.createElement('img');
+                        el.src = imgUrl;
+                        el.className = 'w-16 h-16 object-cover rounded shadow';
+                        container.appendChild(el);
+                    });
+                }
+            } catch (e) {
+                // Invalid JSON, don't update preview
+            }
+        }
+
         function toggleFullScreen(wrapperId) {
             document.getElementById(wrapperId).classList.toggle('fs-mode');
         }
@@ -487,6 +507,8 @@ if ($is_logged_in) {
             } else {
                 document.getElementById('modal_image_preview').style.display = 'none';
             }
+            
+            updateExtraImagesPreview(product.extra_images || '[]');
             
             quillDesc.root.innerHTML = product.description || '';
         }
