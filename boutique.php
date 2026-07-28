@@ -162,22 +162,32 @@ include 'includes/header.php';
     <?php if ($totalPages > 1): ?>
     <div class="pagination" style="margin-top: 3rem; display: flex; justify-content: center; gap: 0.5rem;">
         <?php 
-            $qs = '';
-            if (!empty($search)) $qs .= '&search=' . urlencode($search);
-            if (!empty($selectedCategory)) $qs .= '&category=' . urlencode($selectedCategory);
+            $basePaginationLink = BASE_URL . '/boutique';
+            if (!empty($selectedCategory) && empty($search)) {
+                $basePaginationLink .= '/category/' . urlencode($selectedCategory);
+            }
+            
+            $params = [];
+            if (!empty($search)) {
+                $params['search'] = $search;
+                if (!empty($selectedCategory)) {
+                    $params['category'] = $selectedCategory;
+                }
+            }
+            $qsPrefix = count($params) > 0 ? '?' . http_build_query($params) . '&' : '?';
         ?>
         <?php if ($page > 1): ?>
-            <a href="<?= BASE_URL ?>/boutique?page=<?= $page - 1 ?><?= $qs ?>" class="page-item">&laquo;</a>
+            <a href="<?= $basePaginationLink ?><?= $qsPrefix ?>page=<?= $page - 1 ?>" class="page-item">&laquo;</a>
         <?php endif; ?>
         
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <a href="<?= BASE_URL ?>/boutique?page=<?= $i ?><?= $qs ?>" class="page-item <?= $i === $page ? 'active' : '' ?>">
+            <a href="<?= $basePaginationLink ?><?= $qsPrefix ?>page=<?= $i ?>" class="page-item <?= $i === $page ? 'active' : '' ?>">
                 <?= $i ?>
             </a>
         <?php endfor; ?>
         
         <?php if ($page < $totalPages): ?>
-            <a href="<?= BASE_URL ?>/boutique?page=<?= $page + 1 ?><?= $qs ?>" class="page-item">&raquo;</a>
+            <a href="<?= $basePaginationLink ?><?= $qsPrefix ?>page=<?= $page + 1 ?>" class="page-item">&raquo;</a>
         <?php endif; ?>
     </div>
     <?php endif; ?>

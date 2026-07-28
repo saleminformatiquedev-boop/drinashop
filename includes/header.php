@@ -25,10 +25,11 @@ if (!isset($page_description)) $page_description = 'Découvrez notre sélection 
 
 // Generate Canonical URL safely
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$canonical_url = $protocol . $_SERVER['HTTP_HOST'] . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if (isset($_GET['category'])) {
-    $canonical_url .= '?category=' . urlencode($_GET['category']);
+$canonical_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+if (isset($_GET['category']) && strpos($canonical_path, '/category/') === false) {
+    $canonical_path = rtrim($canonical_path, '/') . '/category/' . urlencode($_GET['category']);
 }
+$canonical_url = $protocol . $_SERVER['HTTP_HOST'] . $canonical_path;
 ?>
 <!DOCTYPE html>
 <html lang="<?= $current_lang ?>" dir="<?= $current_lang === 'ar' ? 'rtl' : 'ltr' ?>">
