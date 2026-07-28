@@ -14,9 +14,15 @@ foreach ($_SESSION['cart'] as $item) {
 }
 
 // Get the current page to highlight nav
-$current_page = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$current_page = trim($current_page, '/');
-if ($current_page === '') $current_page = 'index';
+$current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$current_page = 'index';
+if (strpos($current_path, '/boutique') !== false) {
+    $current_page = 'boutique';
+} elseif (strpos($current_path, '/about') !== false || strpos($current_path, '/qui-sommes-nous') !== false) {
+    $current_page = 'about';
+} elseif (strpos($current_path, '/contact') !== false) {
+    $current_page = 'contact';
+}
 ?>
 <?php
 // Default SEO values if not defined by the page
