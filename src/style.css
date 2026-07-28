@@ -516,11 +516,11 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .hero-title {
+  .hero-content h1 {
     font-size: 2.5rem;
   }
   
-  .product-grid {
+  .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
   
@@ -576,6 +576,32 @@ footer {
   }
   [dir="rtl"] .side-cart {
     left: -100%;
+  }
+  
+  .parallax-content {
+    padding: 1.5rem;
+  }
+  
+  .parallax-content h2 {
+    font-size: 2rem;
+  }
+  
+  .parallax-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .slider-prev, .slider-next {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .slider-prev { left: 10px; }
+  .slider-next { right: 10px; }
+  
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 

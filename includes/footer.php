@@ -3,14 +3,14 @@
     <div class="card" style="width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 2rem; position: relative; background: var(--bg-cream);">
         <button onclick="closeQuickView()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color); z-index: 10;">&times;</button>
         
-        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 1rem;">
+        <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 1rem;">
             <div id="qv-img-container" style="width: 100%; height: 350px; border-radius: 10px; border: 1px solid var(--border-color); background: white; overflow: hidden; cursor: zoom-in; position: relative;">
                 <img id="qv-main-img" src="" alt="" style="width: 100%; height: 100%; object-fit: contain; transition: transform 0.1s; padding: 1rem;">
             </div>
             <div id="qv-thumbnails" style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;"></div>
         </div>
         
-        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
+        <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
             <h2 id="qv-title" style="font-family: var(--font-heading); color: var(--secondary-color);"></h2>
             <div id="qv-price-container" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);"></div>
             <p id="qv-desc" style="color: var(--text-muted); line-height: 1.6;"></p>
