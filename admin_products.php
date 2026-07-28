@@ -190,7 +190,7 @@ if ($is_logged_in) {
                             <span class="text-gray-600"><?= htmlspecialchars($p['category']) ?></span>
                         </td>
                         <td class="px-5 py-4 border-b border-gray-200 text-sm">
-                            <button onclick='openEdit(<?= json_encode($p) ?>)' class="text-blue-500 hover:text-blue-700 mr-3 font-semibold">Éditer</button>
+                            <button onclick="openEdit('<?= htmlspecialchars(rawurlencode(json_encode($p))) ?>')" class="text-blue-500 hover:text-blue-700 mr-3 font-semibold">Éditer</button>
                             <form method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= htmlspecialchars($p['id']) ?>">
@@ -347,7 +347,13 @@ if ($is_logged_in) {
             document.getElementById('productModal').classList.add('hidden');
         }
 
-        function openEdit(product) {
+        function openEdit(productStr) {
+            let product;
+            if (typeof productStr === 'string') {
+                product = JSON.parse(decodeURIComponent(productStr));
+            } else {
+                product = productStr;
+            }
             openModal('edit');
             document.getElementById('modalTitle').innerText = 'Modifier le Produit';
             document.getElementById('original_id').value = product.id;
